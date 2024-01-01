@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Down Detector</title>
+
+    <!-- Include Tailwind CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-gray-100 min-h-screen flex items-center justify-center">
+
+    <div class="bg-white p-8 rounded shadow-md w-full max-w-4xl">
+        <h1 class="text-3xl lg:text-4xl font-bold mb-6">Status:</h1>
+
+        <form method="post" action="{{ url_for('check_status') }}">
+            <label for="website_url" class="block text-sm font-medium text-gray-600">Enter Website URL:</label>
+            <input type="text" id="website_url" name="website_url"
+                class="mt-1 p-2 border rounded-md w-full" required>
+            <button type="submit"
+                class="mt-4 bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 focus:outline-none focus:ring focus:border-blue-300 w-full lg:w-auto">
+                Check Status
+            </button>
+        </form>
+
+        {% if status %}
+            <p class="{{ 'text-red-600' if 'DOWN' in status else 'text-green-600' }} mt-6 text-lg lg:text-xl">
+                Website {{ website_url }} is {{ status }} at {{ status.timestamp }}
+            </p>
+        {% endif %}
+
+
+        {% if statuses %}
+            <div class="mt-8">
+                <h2 class="text-2xl lg:text-3xl font-bold mb-4">Latest Status:</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                    {% for s in statuses %}
+                        <div class="bg-white p-4 rounded-md shadow-md">
+                            <p class="text-lg font-semibold mb-2">{{ s.url }}</p>
+                            <p class="{{ 'text-red-600' if 'DOWN' in s.status else 'text-green-600' }}">
+                                Status: {{ s.status }}
+                            </p>
+                            <p class="text-gray-500">Last Checked: {{ s.timestamp }}</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+
+    </div>
+
+</body>
+
+</html>
